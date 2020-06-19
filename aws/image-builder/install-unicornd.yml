@@ -1,0 +1,40 @@
+name: UnicorndInstaller
+description: Install Unicornd
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: InstallStuff
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sudo apt update
+            - |
+              UNICORND_VERSION=v1.0
+
+              curl -LfsS https://github.com/joerx/unicornd/releases/download/${UNICORND_VERSION}/unicornd_linux_amd64 -o /tmp/unicornd
+
+              sudo mv /tmp/unicornd /usr/local/bin/unicornd
+              sudo chmod +x /usr/local/bin/unicornd
+
+              sudo groupadd unicornd
+              sudo useradd -s /bin/false -g unicornd unicornd -d /home/unicornd
+
+              (
+              cat <<EOD 
+              [Unit]
+              Wants=network-online.target
+              [Service]
+              User=unicornd
+              Group=unicornd
+              Type=simple
+              Environment=UNICORND_ADDRESS=:8080
+              ExecStart=/usr/local/bin/unicornd
+              [Install]
+              WantedBy=multi-user.target
+              EOD
+              ) | sudo tee /etc/systemd/system/unicornd.service
+
+              sudo systemctl daemon-reload
+              sudo systemctl enable unicornd.service

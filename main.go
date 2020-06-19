@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const appVersion = "v1.1"
+
 // UnicornColors is a list of possible colours for Unicorns
 // TODO: add support for multi-colored unicorns
 // See https://louisem.com/29880/color-thesaurus-infographic
@@ -69,6 +71,7 @@ type errorResponse struct {
 type indexRespone struct {
 	Message  string `json:"message"`
 	Hostname string `json:"hostname"`
+	Version  string `json:"version"`
 }
 
 type healthCheckResponse struct {
@@ -95,6 +98,7 @@ func handleIndex(w http.ResponseWriter, req *http.Request) {
 	resp := &indexRespone{
 		Message:  "Hello",
 		Hostname: hostname,
+		Version:  appVersion,
 	}
 	respondOK(w, resp)
 }

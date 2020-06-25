@@ -6,7 +6,6 @@ import { UnicornStack } from '../lib/unicorn-stack';
 const app = new cdk.App();
 new UnicornStack(app, 'UnicornStack', {
     env: {
-        region: 'ap-southeast-1',
-        account: '468871832330',
+        region: 'ap-southeast-1'
     }
 });
